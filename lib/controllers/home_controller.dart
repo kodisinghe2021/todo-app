@@ -1,12 +1,15 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:student_app/api/user_status.dart';
 import 'package:student_app/components/message_boxes.dart';
 import 'package:student_app/constant.dart';
 import 'package:student_app/model/task_model.dart';
+import 'package:student_app/routes/paths.dart';
 
 class HomePageController extends GetxController {
   // update scree visibility
@@ -16,18 +19,22 @@ class HomePageController extends GetxController {
 
   // current index
   String currentTaskID = "";
+
   // TrxtEditing controllers for updating data
   TextEditingController titleToUp = TextEditingController();
   TextEditingController taskToUp = TextEditingController();
 
-//&--------------------------------------------------------------------
+  // initialize firebase auth
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  //get localstorage
+  final LocalUserStatus _userStatus = LocalUserStatus();
 //--------------------------------------------------------------------
 
 //&--------------------------------------------------------------------
 // fetch data from the api
   Future<List<TaskModel>> fetchData() async {
-    final uri = Uri.parse("https://jsonplaceholder.typicode.com/posts/");
+    final uri = Uri.parse(apiUri);
 
     try {
       final response = await http.get(uri);
@@ -55,12 +62,11 @@ class HomePageController extends GetxController {
   Future<TaskModel?> deleteTask(String taskID) async {
     // isUpdate.value = true;
     Logger().i("Inside the delete ${isUpdate.value}");
-    final uri = Uri.parse('https://jsonplaceholder.typicode.com/posts/$taskID');
+    final uri = Uri.parse('$apiUri$taskID');
     Logger().i("uri Executed");
     try {
       final response = await http.delete(uri);
-      Logger().i("responses is gotted ${response.statusCode}");
-      Logger().i("responses is gotted ${response.body}");
+
       if (response.statusCode == 200) {
         alertBoxSuccess("Your Task id- $taskID is deleted");
         //  isUpdate.value = false;
@@ -94,13 +100,9 @@ class HomePageController extends GetxController {
       return;
     }
     try {
-      final uri =
-          Uri.parse('https://jsonplaceholder.typicode.com/todos/$indexID');
-      Logger().i("Inside the update --$indexID");
+      final uri = Uri.parse('$apiUri$indexID');
 
       final response = await http.put(uri, body: request);
-      Logger().i("request sent --${response.statusCode}");
-      Logger().i("request sent --${response.body}");
 
       if (response.statusCode == 200) {
         alertBoxSuccess("Successfully updated with ID $indexID");
@@ -113,7 +115,6 @@ class HomePageController extends GetxController {
 
         //if update success then closeup this
         isUSVisible.value = false;
-        
       } else {
         alertBoxError("couldn't update the task");
         return;
@@ -122,5 +123,17 @@ class HomePageController extends GetxController {
       alertBoxError("Somthing went Wrong");
       return;
     }
+  }
+
+//----------------------------------------------------------------------
+  Future<void> logout() async {
+    // sign out from the firebase
+    await _auth.signOut();
+
+    // clear all current user data from the local storage
+    await _userStatus.removeCurrentUSer();
+
+    //move to login page
+    Get.offAllNamed(Routes.login);
   }
 }

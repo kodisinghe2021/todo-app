@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 import 'package:student_app/components/message_boxes.dart';
 import 'package:student_app/constant.dart';
 import 'package:student_app/model/task_model.dart';
@@ -27,16 +26,13 @@ class CreateToDoController extends GetxController {
       body: task.text,
     ).toJson();
 
-    final uri = apiUri;
-
     try {
+      final uri = Uri.parse(apiUri);
+
       // send create data request
       final response = await http.post(uri, body: request);
 
-      Logger().i("Status code ${response.statusCode}");
-
       if (response.statusCode == 201) {
-        Logger().i(response.body);
         alertBoxSuccess("Successfully created the task");
 
         //clear the text editing controllers

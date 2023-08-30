@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:student_app/components/message_boxes.dart';
 import 'package:student_app/components/scrolable_card.dart';
 import 'package:student_app/components/update_card.dart';
 import 'package:student_app/controllers/home_controller.dart';
@@ -19,6 +20,21 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           title: const Text("ToDo List"),
           centerTitle: true,
+          actions: [
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () async {
+                    await _getController.logout();
+                    alertBoxSuccess("Thank you");
+                  },
+                  icon: const Icon(
+                    Icons.logout,
+                  ),
+                ),
+              ],
+            )
+          ],
         ),
         body: Stack(
           children: [
