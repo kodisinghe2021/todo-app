@@ -35,7 +35,7 @@ class AuthController extends GetxController {
       alertBoxWarning("Feild cannot be empty");
       return false;
     }
-    if (!emailReg.text.contains('@') || !emailReg.text.contains('.')) {
+    if (!emailReg.text.contains('@') && !emailReg.text.contains('.')) {
       alertBoxWarning("Invalid email");
       return false;
     }

@@ -23,7 +23,6 @@ class ScrollableCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Slidable(
       endActionPane: ActionPane(
-        dragDismissible: true,
         motion: const ScrollMotion(),
         children: [
           // ---------------------Slidable Update button

@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 import 'package:student_app/api/user_status.dart';
 import 'package:student_app/components/message_boxes.dart';
 import 'package:student_app/constant.dart';
@@ -60,10 +59,8 @@ class HomePageController extends GetxController {
 // delete data
 
   Future<TaskModel?> deleteTask(String taskID) async {
-    // isUpdate.value = true;
-    Logger().i("Inside the delete ${isUpdate.value}");
     final uri = Uri.parse('$apiUri$taskID');
-    Logger().i("uri Executed");
+
     try {
       final response = await http.delete(uri);
 
@@ -99,6 +96,7 @@ class HomePageController extends GetxController {
       alertBoxWarning("Field cannot be empty");
       return;
     }
+    
     try {
       final uri = Uri.parse('$apiUri$indexID');
 

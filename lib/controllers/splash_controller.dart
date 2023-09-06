@@ -6,12 +6,15 @@ import 'package:student_app/routes/paths.dart';
 class SplashScreenController extends GetxController {
   @override
   void onReady() async {
+    // when page is ready then the move() function will execute
     await move();
     super.onReady();
   }
 
+  // initializing local storage
   final LocalUserStatus _userStatus = LocalUserStatus();
 
+  // page move according to the user status
   Future<void> move() async {
     Logger().i("Inside move()");
 
